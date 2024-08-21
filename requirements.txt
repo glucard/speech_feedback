@@ -1,1 +1,9 @@
+torch
+torchvision
+torchaudio
+transformers
+ray[data,train,tune,serve]
+optuna
+ipywidgets
+librosa
 pandas
