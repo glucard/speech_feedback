@@ -6,4 +6,6 @@ ray[data,train,tune,serve]
 optuna
 ipywidgets
 librosa
+scikit-learn
+matplotlib
 pandas
