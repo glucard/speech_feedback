@@ -2,7 +2,6 @@ metadata_dev_final.csv
 best_result.json
 
 *.zip
-*.csv
 *.old.*
 
 dev/
