@@ -3,4 +3,5 @@
 prometheus*
 
 data/
-_df_audios
+_df_audios/
+__pycache__/
