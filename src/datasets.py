@@ -1,6 +1,12 @@
 import os
-from urllib.request import urlretrieve
 import zipfile
+import math
+import pandas as pd
+import torchaudio
+
+from urllib.request import urlretrieve
+
+
 
 DATASET_PATH = "temp_datasets"
 
@@ -33,6 +39,15 @@ def hesitation_dev() -> tuple[str, str]:
     # get labels file
     if not os.path.isfile(annotations_file_path):
         urlretrieve("https://huggingface.co/datasets/gabrielrstan/CORAA-v1.1/resolve/main/metadata_dev_final.csv", annotations_file_path)
+        
+        # add duration(sec) column
+        annotations = pd.read_csv(annotations_file_path)
+        def get_audio_duration(file_path):
+            # print(file_path)
+            waveform, sample_rate = torchaudio.load(os.path.join(curr_dataset_path, file_path))
+            return math.ceil(waveform.shape[-1] / sample_rate)
+        annotations['duration(sec)'] = annotations['file_path'].apply(get_audio_duration)
+        annotations.to_csv(annotations_file_path)
 
     return annotations_file_path, curr_dataset_path 
 

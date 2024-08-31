@@ -18,20 +18,22 @@ class CnnMFCC(nn.Module):
         )
         self.conv = nn.Sequential(
             nn.Conv2d(1, 16, (5,5), (2,2)),
+            nn.BatchNorm2d(16),
+            nn.MaxPool2d(2, 2),
             nn.Conv2d(16, 32, (5,5), (2,2)),
+            nn.BatchNorm2d(32),
+            nn.MaxPool2d(2, 2),
             nn.Flatten(start_dim=1, end_dim=-1)
         )
         linear_in = self.conv(self.feature_extractor(torch.rand(1, 1, sample_rate*max_audio_length_seconds))).shape[-1]
 
         self.classifier = nn.Sequential(
+            nn.Dropout(0.5, inplace=True),
             nn.Linear(in_features=linear_in, out_features=n_classes)
         )
 
-        self.net = nn.Sequential(
-            self.feature_extractor,
-            self.conv,
-            self.classifier,
-        )
-
     def forward(self, x):
-        return self.net(x)
+        x = self.feature_extractor(x)
+        x = self.conv(x)
+        x = self.classifier(x)
+        return x
