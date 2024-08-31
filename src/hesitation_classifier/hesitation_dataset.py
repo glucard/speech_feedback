@@ -10,9 +10,7 @@ class HesitationDataset(Dataset):
         self.audio_labels = pd.read_csv(annotations_file)
         self.audio_dir = audio_dir
         self.resample_rate = resample_rate
-        self.transform = torch.nn.Sequential(
-            T.MFCC(sample_rate=resample_rate)
-        )
+        self.transform = transform
         self.target_transform = target_transform
 
     def __len__(self):

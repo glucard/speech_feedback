@@ -1,7 +1,9 @@
 .venv
+.env
 
 prometheus*
 
+temp_datasets/
 data/
 _df_audios/
 __pycache__/
