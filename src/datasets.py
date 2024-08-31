@@ -47,7 +47,8 @@ def hesitation_dev() -> tuple[str, str]:
             waveform, sample_rate = torchaudio.load(os.path.join(curr_dataset_path, file_path))
             return math.ceil(waveform.shape[-1] / sample_rate)
         annotations['duration(sec)'] = annotations['file_path'].apply(get_audio_duration)
-        annotations.to_csv(annotations_file_path)
+        annotations = annotations.reset_index(drop=True)
+        annotations.to_csv(annotations_file_path, index=False)
 
     return annotations_file_path, curr_dataset_path 
 

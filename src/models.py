@@ -20,9 +20,13 @@ class CnnMFCC(nn.Module):
             nn.Conv2d(1, 16, (5,5), (2,2)),
             nn.BatchNorm2d(16),
             nn.MaxPool2d(2, 2),
+            nn.Dropout(0.5, inplace=True),
+
             nn.Conv2d(16, 32, (5,5), (2,2)),
             nn.BatchNorm2d(32),
             nn.MaxPool2d(2, 2),
+            nn.Dropout(0.5, inplace=True),
+            
             nn.Flatten(start_dim=1, end_dim=-1)
         )
         linear_in = self.conv(self.feature_extractor(torch.rand(1, 1, sample_rate*max_audio_length_seconds))).shape[-1]
