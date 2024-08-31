@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 import torchaudio
 import torchaudio.transforms as T
 
-class HesitationDataset(Dataset):
+class CustomAudioDataset(Dataset):
     def __init__(self, annotations_file, audio_dir, resample_rate=16_000, transform=None, target_transform=None):
         self.audio_labels = pd.read_csv(annotations_file)
         self.audio_dir = audio_dir

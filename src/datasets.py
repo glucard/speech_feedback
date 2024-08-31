@@ -10,7 +10,9 @@ def hesitation_dev() -> tuple[str, str]:
 
     if not os.path.isdir(curr_dataset_path):
         os.mkdir(curr_dataset_path)
+
     
+    # get data dir
     data_path = os.path.join(curr_dataset_path, "dev")
 
     if not os.path.isdir(data_path):
@@ -25,8 +27,14 @@ def hesitation_dev() -> tuple[str, str]:
             print("unzip dataset...")
             zip_ref.extractall(curr_dataset_path)
             print("unzip done.")
+    
+    annotations_file_path = os.path.join(curr_dataset_path, "annotations.csv")
+    
+    # get labels file
+    if not os.path.isfile(annotations_file_path):
+        urlretrieve("https://huggingface.co/datasets/gabrielrstan/CORAA-v1.1/resolve/main/metadata_dev_final.csv", annotations_file_path)
 
-    return curr_dataset_path, "datasets/hesitation/metadata_dev_final.csv"
+    return annotations_file_path, curr_dataset_path 
 
 DATASET_IDS = {
     "hesitation_dev": hesitation_dev
@@ -34,7 +42,7 @@ DATASET_IDS = {
 
 def get_data_path(dataset_id:str):
     """
-    returns: dataset_dir_path, label_file_path
+    returns: annotations_file_path, data_dir_path
     """
     if not os.path.isdir(DATASET_PATH):
         os.mkdir(DATASET_PATH)
