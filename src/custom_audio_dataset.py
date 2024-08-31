@@ -6,11 +6,11 @@ import torchaudio
 import torchaudio.transforms as T
 
 class CustomAudioDataset(Dataset):
-    def __init__(self, annotations_file, audio_dir, resample_rate=16_000, transform=None, target_transform=None):
+    def __init__(self, annotations_file, audio_dir, resample_rate=16_000, data_transform=None, target_transform=None):
         self.audio_labels = pd.read_csv(annotations_file)
         self.audio_dir = audio_dir
         self.resample_rate = resample_rate
-        self.transform = transform
+        self.data_transform = data_transform
         self.target_transform = target_transform
 
     def __len__(self):
@@ -23,9 +23,9 @@ class CustomAudioDataset(Dataset):
         resampler = T.Resample(sample_rate, self.resample_rate, dtype=waveform.dtype)
         waveform = resampler(waveform)
 
-        label = self.audio_labels.iloc[idx]['votes_for_hesitation']
-        if self.transform:
-            waveform = self.transform(waveform)
+        label = 1 if self.audio_labels.iloc[idx]['votes_for_hesitation'] > 0 else 0
+        if self.data_transform:
+            waveform = self.data_transform(waveform)
         if self.target_transform:
             label = self.target_transform(label)
         return waveform, label
