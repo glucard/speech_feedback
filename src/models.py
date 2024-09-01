@@ -12,20 +12,51 @@ class CnnMFCC(nn.Module):
         self.max_audio_length_seconds = max_audio_length_seconds
         self.features_in = max_audio_length_seconds * sample_rate
 
+        n_fft = 2048
+        win_length = None
+        hop_length = 512
+        n_mels = 256
+        n_mfcc = 256
+
         self.feature_extractor = nn.Sequential(
-            # PadOrTruncateLayer(self.features_in),
-            T.MFCC(sample_rate=self.sample_rate),
+            T.MelSpectrogram(
+                sample_rate=sample_rate,
+                # n_fft=n_fft,
+                # win_length=win_length,
+                # hop_length=hop_length,
+                # center=True,
+                # pad_mode="reflect",
+                # power=2.0,
+                # norm="slaney",
+                # n_mels=n_mels,
+                # mel_scale="htk",
+            )
+            # T.MFCC(
+            #     sample_rate=self.sample_rate,
+            #     n_mfcc=n_mfcc,
+            #     melkwargs={
+            #         "n_fft": n_fft,
+            #         "n_mels": n_mels,
+            #         "hop_length": hop_length,
+            #         "mel_scale": "htk",
+            #         },
+            #     ),
         )
         self.conv = nn.Sequential(
-            nn.Conv2d(1, 16, (5,5), (2,2)),
+            nn.Conv2d(1, 16, (8,8), (2,2),padding=1),
             nn.BatchNorm2d(16),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(0.5, inplace=True),
+            nn.Dropout(0.4, inplace=True),
 
-            nn.Conv2d(16, 32, (5,5), (2,2)),
+            nn.Conv2d(16, 32, (5,5), (2,2),padding=1),
             nn.BatchNorm2d(32),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(0.5, inplace=True),
+            nn.Dropout(0.4, inplace=True),
+            
+            nn.Conv2d(32, 32, (3,3), (1,1),padding=1),
+            nn.BatchNorm2d(32),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(0.4, inplace=True),
             
             nn.Flatten(start_dim=1, end_dim=-1)
         )
