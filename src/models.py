@@ -19,8 +19,8 @@ class CnnMFCC(nn.Module):
         n_mfcc = 256
 
         self.feature_extractor = nn.Sequential(
-            T.MelSpectrogram(
-                sample_rate=sample_rate,
+            # T.MelSpectrogram(
+            #     sample_rate=sample_rate,
                 # n_fft=n_fft,
                 # win_length=win_length,
                 # hop_length=hop_length,
@@ -30,40 +30,40 @@ class CnnMFCC(nn.Module):
                 # norm="slaney",
                 # n_mels=n_mels,
                 # mel_scale="htk",
-            )
-            # T.MFCC(
-            #     sample_rate=self.sample_rate,
-            #     n_mfcc=n_mfcc,
-            #     melkwargs={
-            #         "n_fft": n_fft,
-            #         "n_mels": n_mels,
-            #         "hop_length": hop_length,
-            #         "mel_scale": "htk",
-            #         },
-            #     ),
+            # )
+            T.MFCC(
+                sample_rate=self.sample_rate,
+                # n_mfcc=n_mfcc,
+                # melkwargs={
+                #     "n_fft": n_fft,
+                #     "n_mels": n_mels,
+                #     "hop_length": hop_length,
+                #     "mel_scale": "htk",
+                #     },
+                ),
         )
         self.conv = nn.Sequential(
             nn.Conv2d(1, 16, (8,8), (2,2),padding=1),
             nn.BatchNorm2d(16),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(0.4, inplace=True),
+            nn.Dropout(0.7, inplace=True),
 
             nn.Conv2d(16, 32, (5,5), (2,2),padding=1),
             nn.BatchNorm2d(32),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(0.4, inplace=True),
+            nn.Dropout(0.7, inplace=True),
             
             nn.Conv2d(32, 32, (3,3), (1,1),padding=1),
             nn.BatchNorm2d(32),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(0.4, inplace=True),
+            nn.Dropout(0.7, inplace=True),
             
             nn.Flatten(start_dim=1, end_dim=-1)
         )
         linear_in = self.conv(self.feature_extractor(torch.rand(1, 1, sample_rate*max_audio_length_seconds))).shape[-1]
 
         self.classifier = nn.Sequential(
-            nn.Dropout(0.5, inplace=True),
+            nn.Dropout(0.7, inplace=True),
             nn.Linear(in_features=linear_in, out_features=n_classes)
         )
 

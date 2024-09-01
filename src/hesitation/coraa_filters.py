@@ -62,7 +62,7 @@ def filter2(annotations_file_path:str, train_size:int, test_size_from_val_size:i
     filtered_annotations = filtered_annotations.reset_index(drop=True)
     filtered_annotations['has_hesitation'] = (filtered_annotations[['votes_for_hesitation','votes_for_filled_pause']] > 0).any(axis=1).astype(int)
     filtered_annotations = filtered_annotations[filtered_annotations['duration(sec)'] > 3]
-    filtered_annotations = filtered_annotations[filtered_annotations['duration(sec)'] < 30]
+    filtered_annotations = filtered_annotations[filtered_annotations['duration(sec)'] < 15]
 
     # remove repeated has hesitation
     filtered_annotations = balance_has_hesitation(filtered_annotations)
