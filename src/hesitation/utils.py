@@ -10,11 +10,9 @@ def balance_has_hesitation(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop(to_remove)
 
 def filter_to_csv(filtered_df:pd.DataFrame, annotations_file_path:str, filter_id:str) -> str:
-    filtered_dir = os.path.join(*annotations_file_path.split(os.sep)[:-1], "filtered_annotations")
-
+    filtered_dir = os.path.join("/", *annotations_file_path.split(os.sep)[:-1], "filtered_annotations")
     if not os.path.isdir(filtered_dir):
         os.mkdir(filtered_dir)
-
     filtered_annotations_file_path = os.path.join(filtered_dir, f"{filter_id}.csv")
     filtered_df.to_csv(filtered_annotations_file_path, index=False)
     return filtered_annotations_file_path

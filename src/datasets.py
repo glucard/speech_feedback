@@ -50,7 +50,7 @@ def hesitation_dev() -> tuple[str, str]:
         annotations = annotations.reset_index(drop=True)
         annotations.to_csv(annotations_file_path, index=False)
 
-    return annotations_file_path, curr_dataset_path 
+    return os.path.abspath(annotations_file_path), os.path.abspath(curr_dataset_path )
 
 DATASET_IDS = {
     "hesitation_dev": hesitation_dev
