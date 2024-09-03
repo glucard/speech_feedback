@@ -69,8 +69,8 @@ def filter2(annotations_file_path:str, train_size:int, test_size_from_val_size:i
 
     filtered_annotations = filtered_annotations.reset_index(drop=True)
 
-    train_df, val_df = train_test_split(filtered_annotations, train_size=train_size)
-    val_df, test_df = train_test_split(val_df, test_size=test_size_from_val_size)
+    train_df, val_df = train_test_split(filtered_annotations, train_size=train_size, random_state=1)
+    val_df, test_df = train_test_split(val_df, test_size=test_size_from_val_size, random_state=1)
 
     train_file_path = filter_to_csv(train_df, annotations_file_path, f"{filter_id}_train")
     val_file_path = filter_to_csv(val_df, annotations_file_path, f"{filter_id}_val")

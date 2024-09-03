@@ -6,6 +6,7 @@ def balance_has_hesitation(df: pd.DataFrame) -> pd.DataFrame:
     # remove repeated has hesitation
     has_hesitation_count = df['has_hesitation'].value_counts()[1]
     not_has_hesitation_count = df['has_hesitation'].value_counts()[0]
+    random.seed(1)
     to_remove = random.sample(list(df[df['has_hesitation'] == 0].index), not_has_hesitation_count-has_hesitation_count)
     return df.drop(to_remove)
 
