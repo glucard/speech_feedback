@@ -1,10 +1,12 @@
 import os
 import zipfile
+import rarfile
 import math
 import pandas as pd
 import torchaudio
 
 from urllib.request import urlretrieve
+from huggingface_hub import snapshot_download
 
 
 
@@ -95,9 +97,17 @@ def hesitation_test() -> tuple[str, str]:
 
     return os.path.abspath(annotations_file_path), os.path.abspath(curr_dataset_path)
 
+def hesitation_train():
+
+    curr_dataset_path = os.path.join(DATASET_PATH, "hesitation_train")
+
+    if not os.path.isdir(curr_dataset_path):
+        raise FileNotFoundError(f"{curr_dataset_path} was not found. Did you already run './setup_coraa_repo_train.py'?")
+
 DATASET_IDS = {
     "hesitation_dev": hesitation_dev,
     "hesitation_test": hesitation_test,
+    "hesitation_train": hesitation_train,
 }
 
 def get_data_path(dataset_id:str):
