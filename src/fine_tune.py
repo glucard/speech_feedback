@@ -40,7 +40,7 @@ MAX_FEATURES_IN = SAMPLE_RATE * MAX_SECONDS_DURATION
 
 DEVICE
 
-annotations_file_path, data_dir_path = get_data_path("hesitation_test")
+annotations_file_path, data_dir_path = get_data_path("hesitation_train")
 annotations_file_path, data_dir_path
 
 FILTERS_FUNC = {

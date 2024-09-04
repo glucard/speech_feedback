@@ -103,6 +103,13 @@ def hesitation_train():
 
     if not os.path.isdir(curr_dataset_path):
         raise FileNotFoundError(f"{curr_dataset_path} was not found. Did you already run './setup_coraa_repo_train.py'?")
+    
+
+    annotations_file_path = os.path.join(curr_dataset_path, "annotations.csv")
+    if not os.path.isfile(annotations_file_path):
+        raise FileNotFoundError(f"{annotations_file_path} was not found. Did you already run './setup_coraa_repo_train.py'?")
+
+    return os.path.abspath(annotations_file_path), os.path.abspath(curr_dataset_path)
 
 DATASET_IDS = {
     "hesitation_dev": hesitation_dev,
