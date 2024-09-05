@@ -1,4 +1,3 @@
-from IPython.display import Audio
 import random
 import matplotlib.pyplot as plt
 import tempfile
@@ -36,7 +35,7 @@ MAX_SECONDS_DURATION = 10
 
 MAX_FEATURES_IN = SAMPLE_RATE * MAX_SECONDS_DURATION
 
-annotations_file_path, data_dir_path = get_data_path("hesitation_test")
+annotations_file_path, data_dir_path = get_data_path("hesitation_train")
 annotations_file_path, data_dir_path
 
 FILTERS_FUNC = {
@@ -149,7 +148,7 @@ def train_hesitation(config:dict, max_epochs=30, tunning=True):
         if tunning:
             with tempfile.TemporaryDirectory() as temp_checkpoint_dir:
                 checkpoint = None
-                if (i + 1) % max_epochs == 0 and (val_log["mean_loss"] < 0.4):
+                if (i + 1) % max_epochs == 0 and (val_log["accuracy"] > 0.75):
                     # This saves the model to the trial directory
                     torch.save(
                         model.state_dict(),
@@ -203,7 +202,7 @@ def fine_tune():
         "model_architecture": tune.choice(MODELS_ARCH.keys()),
     }
 
-    metric = "train_accuracy"
+    metric = "val_accuracy"
     mode = "max"
 
     optuna_search = OptunaSearch(

@@ -69,17 +69,17 @@ def dataloader_from_filter(
     # Usage in DataLoader
     train_filter_dataloader = torch.utils.data.DataLoader(
         dataset=train_filter_dataset,
-        batch_size=32,
+        batch_size=256,
         # collate_fn=pad_collate_fn
     )
     val_filter_dataloader = torch.utils.data.DataLoader(
         dataset=val_filter_dataset,
-        batch_size=32,
+        batch_size=256,
         # collate_fn=pad_collate_fn
     )
     test_filter_dataloader = torch.utils.data.DataLoader(
         dataset=test_filter_dataset,
-        batch_size=32,
+        batch_size=256,
         # collate_fn=pad_collate_fn
     )
 
