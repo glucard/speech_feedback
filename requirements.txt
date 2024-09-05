@@ -9,6 +9,5 @@ librosa
 scikit-learn
 matplotlib
 pandas
-gdown
 huggingface_hub
 rarfile

@@ -1,6 +1,5 @@
 import os
 import zipfile
-import rarfile
 import math
 import pandas as pd
 import torchaudio

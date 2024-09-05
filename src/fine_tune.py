@@ -28,8 +28,6 @@ from src.hesitation import coraa_filters
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-MAX_EPOCH = 15
-
 TRAIN_SIZE = 0.6
 TEST_FROM_VAL_SIZE = 0.5
 
@@ -38,9 +36,7 @@ MAX_SECONDS_DURATION = 10
 
 MAX_FEATURES_IN = SAMPLE_RATE * MAX_SECONDS_DURATION
 
-DEVICE
-
-annotations_file_path, data_dir_path = get_data_path("hesitation_train")
+annotations_file_path, data_dir_path = get_data_path("hesitation_test")
 annotations_file_path, data_dir_path
 
 FILTERS_FUNC = {
@@ -48,6 +44,7 @@ FILTERS_FUNC = {
     "filter1": coraa_filters.filter1,
     "filter2": coraa_filters.filter2,
 }
+
 MODELS_ARCH = {
     "CnnMFCC": models.CnnMFCC,
     "CnnMFCC_v2": models.CnnMFCC_v2,
@@ -79,7 +76,6 @@ def train_func(model, optimizer, dataloader):
 		"mean_loss": sum(losses) / len(losses),
 		"accuracy": accuracy_score(target_np, pred_np),
 		"f1_score": f1_score(target_np, pred_np),
-		# "confusion_matrix": confusion_matrix(target_np, pred_np),
 	}
 
 def validate_func(model, dataloader):
@@ -106,6 +102,7 @@ def validate_func(model, dataloader):
 		"mean_loss": sum(losses) / len(losses),
 		"accuracy": accuracy_score(target_np, pred_np),
 		"f1_score": f1_score(target_np, pred_np),
+		"confusion_matrix": confusion_matrix(target_np, pred_np),
 	}    
 
 def train_hesitation(config:dict, max_epochs=30, tunning=True):
@@ -136,7 +133,7 @@ def train_hesitation(config:dict, max_epochs=30, tunning=True):
     model = model_architecture(n_classes=2, sample_rate=SAMPLE_RATE, features_in=features_in, dropout=config['dropout'])
     model = model.to(DEVICE)
 
-    optimizer = optim.Adam(model.parameters(), lr=config['learning_rate'], weight_decay=config['weight_decay'])
+    optimizer = optim.Adam(model.parameters(), lr=config['learning_rate'])#, weight_decay=config['weight_decay'])
 
     # early_stopping_patience = 5  # Number of epochs to wait before stopping
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.7, patience=3)
@@ -166,6 +163,7 @@ def train_hesitation(config:dict, max_epochs=30, tunning=True):
                         "val_mean_loss": val_log["mean_loss"],
                         "val_accuracy": val_log["accuracy"],
                         "val_f1_score": val_log["f1_score"],
+                        "val_confusion_matrix": val_log["confusion_matrix"],
                     },
                     checkpoint=checkpoint
                 )
@@ -195,10 +193,10 @@ def fine_tune():
 
     config = {
         "max_seconds_length": tune.randint(3, 20),
-        "dropout": tune.uniform(0.1, 0.5),
+        "dropout": tune.uniform(0.1, 0.95),
         "coraa_filter_func": tune.choice(FILTERS_FUNC.keys()),
-        "learning_rate":  tune.loguniform(1e-5, 1e-2),
-        "weight_decay": tune.loguniform(1e-5, 1e-2),
+        "learning_rate":  tune.loguniform(1e-7, 1e-1),
+        # "weight_decay": tune.loguniform(1e-5, 1e-2),
         "model_architecture": tune.choice(MODELS_ARCH.keys()),
     }
 
@@ -216,7 +214,7 @@ def fine_tune():
         metric=metric,
         mode=mode,
         max_t=30,
-        grace_period=10,
+        grace_period=5,
         reduction_factor=3,
         brackets=2
     )
@@ -225,7 +223,7 @@ def fine_tune():
     tuner = tune.Tuner(
         trainable_with_resources,
         tune_config=tune.TuneConfig(
-            num_samples=50,
+            num_samples=100,
             search_alg=optuna_search,
             scheduler=asas_scheduler
         ),
