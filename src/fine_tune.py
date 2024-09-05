@@ -49,6 +49,7 @@ MODELS_ARCH = {
     "CnnMFCC": models.CnnMFCC,
     "CnnMFCC_v2": models.CnnMFCC_v2,
     "CnnSpectrogram": models.CnnSpectrogram,
+    "CnnSpectrogram_v2": models.CnnSpectrogram_v2,
 }
 
 def train_func(model, optimizer, dataloader):
@@ -110,12 +111,14 @@ def train_hesitation(config:dict, max_epochs=30, tunning=True):
 
     features_in = config['max_seconds_length'] * SAMPLE_RATE
     train_data_transform = torch.nn.Sequential(
-    # custom_layers.RandomPitchShiftLayer(p=0.001, sample_rate=SAMPLE_RATE, min_steps=-5, max_steps=5), # too heavy
-    # custom_layers.ReverberationLayer(1,400), # not working yet
-    custom_layers.PadOrTruncateLayer(features_in),
-    custom_layers.NoiseLayer(p=0.5, noise_factor=0.05),
+        # custom_layers.RandomPitchShiftLayer(p=0.001, sample_rate=SAMPLE_RATE, min_steps=-5, max_steps=5), # too heavy
+        # custom_layers.ReverberationLayer(1,400), # not working yet
+        custom_layers.NormalizeLayer(),
+        custom_layers.PadOrTruncateLayer(features_in),
+        custom_layers.NoiseLayer(p=0.5, noise_factor=0.05),
     )
     data_transform = torch.nn.Sequential(
+        custom_layers.NormalizeLayer(),
         custom_layers.PadOrTruncateLayer(features_in),
     )
     filter_func = FILTERS_FUNC[config["coraa_filter_func"]]
@@ -200,7 +203,7 @@ def fine_tune():
         "model_architecture": tune.choice(MODELS_ARCH.keys()),
     }
 
-    metric = "val_f1_score"
+    metric = "train_accuracy"
     mode = "max"
 
     optuna_search = OptunaSearch(

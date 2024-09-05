@@ -62,3 +62,12 @@ class ReverberationLayer(nn.Module):
     def forward(self, waveform):
         impulse_response = torch.randn(self.min_reverb, self.max_reverb)  # Example impulse response
         return torch.nn.functional.conv1d(waveform.unsqueeze(0), impulse_response.unsqueeze(0)).squeeze(0)
+    
+class NormalizeLayer(nn.Module):
+    def __init__(self):
+        super(NormalizeLayer, self).__init__()
+
+    def forward(self, waveform):
+        peak = torch.max(torch.abs(waveform))
+        waveform = waveform / peak
+        return waveform
