@@ -21,7 +21,7 @@ from ray.train import RunConfig
 from ray.tune import CLIReporter
 from src.custom_audio_dataset import CustomAudioDataset
 from src.utils import pad_collate_fn, plot_spectrogram, dataloader_from_filter
-from src.datasets import get_data_path
+from src.datasets.datasets import get_data_path
 from src import custom_layers, models
 from src.hesitation import coraa_filters
 

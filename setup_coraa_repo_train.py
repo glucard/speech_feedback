@@ -1,5 +1,5 @@
 from huggingface_hub import snapshot_download
-from src.datasets import DATASET_PATH
+from src.datasets.datasets import DATASET_PATH
 import os
 import rarfile
 import pandas as pd
